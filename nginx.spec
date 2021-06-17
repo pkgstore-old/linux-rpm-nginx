@@ -61,7 +61,7 @@ Source210:                      UPGRADE-NOTES-1.6-to-1.10
 # Signature
 Source900:                      https://nginx.org/download/nginx-%{version}.tar.gz.asc
 # Brotli
-Source910:                      %{d_brotli}.tar.gz
+Source910:                      %{d_brotli}.tar.xz
 # Zero server config
 Source920:                      server.default.conf
 # SSL generator
@@ -256,7 +256,7 @@ Requires:                       nginx
 
 # Copy and unpack ngx_brotli.
 %{__cp} %{SOURCE910} %{_tmppath}
-%{__tar} -xzf %{_tmppath}/%{d_brotli}.tar.gz -C %{_tmppath}
+%{__tar} -xJf %{_tmppath}/%{d_brotli}.tar.xz -C %{_tmppath}
 
 %if 0%{?rhel} > 0 && 0%{?rhel} < 8
 %{__sed} -i -e 's#KillMode=.*#KillMode=process#g' nginx.service
