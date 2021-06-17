@@ -341,11 +341,11 @@ if ! ./configure                                                            \
   exit 1
 fi
 
-%make_build
+%{make_build}
 
 
 %install
-%make_install INSTALLDIRS=vendor
+%{make_install} INSTALLDIRS=vendor
 
 find %{buildroot} -type f -name .packlist -exec %{__rm} -f '{}' \;
 find %{buildroot} -type f -name perllocal.pod -exec %{__rm} -f '{}' \;
