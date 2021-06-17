@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+set -e
+
+DHPARAM="/etc/pki/tls/certs/nginx.localhost.dhparam.pem"
+
+if [[ -f "${DHPARAM}" ]]; then
+  exit 0
+fi
+
+openssl dhparam -out "${DHPARAM}" 2048
