@@ -3,7 +3,7 @@
 %global app                     nginx
 %global user                    %{app}
 %global group                   %{app}
-%global release_prefix          100
+%global release_prefix          101
 
 %global d_brotli                ngx_brotli
 
@@ -607,6 +607,9 @@ fi
 
 
 %changelog
+* Fri Jun 18 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-101
+- UPD: New build for latest changes.
+
 * Thu Jun 17 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-100
 - NEW: v1.21.0.
 - UPD: Move to GitHub.
