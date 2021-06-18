@@ -3,7 +3,7 @@
 %global app                     nginx
 %global user                    %{app}
 %global group                   %{app}
-%global release_prefix          101
+%global release_prefix          102
 
 %global d_brotli                ngx_brotli
 
@@ -13,12 +13,12 @@
 
 %bcond_with geoip
 
-# nginx gperftools support should be dissabled for RHEL >= 8
+# Nginx gperftools support should be dissabled for RHEL >= 8.
 # see: https://bugzilla.redhat.com/show_bug.cgi?id=1931402
 %if 0%{?rhel} >= 8
 %global with_gperftools 0
 %else
-# gperftools exist only on selected arches
+# gperftools exist only on selected arches.
 # gperftools *detection* is failing on ppc64*, possibly only configure
 # bug, but disable anyway.
 %ifnarch s390 s390x ppc64 ppc64le
@@ -37,13 +37,16 @@ Epoch:                          1
 Version:                        1.21.0
 Release:                        %{release_prefix}%{?dist}
 Summary:                        A high performance web server and reverse proxy server
-# BSD License (two clause)
+# BSD License (two clause).
 # http://www.freebsd.org/copyright/freebsd-license.html
 License:                        BSD
-URL:                            https://nginx.org/
+URL:                            https://nginx.org
+Vendor:                         Package Store <https://pkgstore.github.io>
+Packager:                       Kitsune Solar <kitsune.solar@gmail.com>
 
 Source0:                        https://nginx.org/download/nginx-%{version}.tar.gz
-# Keys are found here: https://nginx.org/en/pgp_keys.html
+# Keys are found here:
+# https://nginx.org/en/pgp_keys.html
 Source2:                        https://nginx.org/keys/maxim.key
 Source3:                        https://nginx.org/keys/mdounin.key
 Source4:                        https://nginx.org/keys/sb.key
@@ -58,23 +61,23 @@ Source104:                      50x.html
 Source200:                      README.dynamic
 Source210:                      UPGRADE-NOTES-1.6-to-1.10
 
-# Signature
+# Signature.
 Source900:                      https://nginx.org/download/nginx-%{version}.tar.gz.asc
-# Brotli
+# Brotli.
 Source910:                      %{d_brotli}.tar.xz
-# Zero server config
+# Zero server config.
 Source920:                      server.default.conf
-# SSL generator
+# SSL generator.
 Source921:                      nginx-ssl-pass-dialog
 Source922:                      nginx-ssl-gencerts
 Source923:                      nginx-ssl-gencerts-dhparam
 
-# removes -Werror in upstream build scripts.  -Werror conflicts with
+# Removes "-Werror" in upstream build scripts. "-Werror" conflicts with
 # -D_FORTIFY_SOURCE=2 causing warnings to turn into errors.
 Patch0:                         0001-remove-Werror-in-upstream-build-scripts.patch
 
-# downstream patch - fix PIDFile race condition (rhbz#1869026)
-# rejected upstream: https://trac.nginx.org/nginx/ticket/1897
+# Downstream patch - fix PIDFile race condition (rhbz#1869026).
+# Rejected upstream: https://trac.nginx.org/nginx/ticket/1897.
 Patch1:                         0002-fix-PIDFile-handling.patch
 
 BuildRequires:                  make
@@ -93,9 +96,9 @@ BuildRequires:                  zlib-devel
 
 Requires:                       nginx-filesystem = %{epoch}:%{version}-%{release}
 %if 0%{?el7}
-# centos-logos el7 does not provide 'system-indexhtml'
+# "centos-logos" el7 does not provide "system-indexhtml".
 Requires:                       system-logos redhat-indexhtml
-# need to remove epel7 geoip sub-package, doesn't work anymore
+# Need to remove epel7 geoip sub-package, doesn't work anymore.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1576034
 # https://bugzilla.redhat.com/show_bug.cgi?id=1664957
 Obsoletes:                      nginx-mod-http-geoip <= 1:1.16
@@ -245,7 +248,7 @@ Requires:                       nginx
 # -------------------------------------------------------------------------------------------------------------------- #
 
 %prep
-# Combine all keys from upstream into one file
+# Combine all keys from upstream into one file.
 %{__cat} %{S:2} %{S:3} %{S:4} > %{_builddir}/%{name}.gpg
 %{gpgverify} --keyring='%{_builddir}/%{name}.gpg' --signature='%{SOURCE900}' --data='%{SOURCE0}'
 %autosetup -p1
@@ -272,9 +275,9 @@ Requires:                       nginx
 
 
 %build
-# nginx does not utilize a standard configure script.  It has its own
+# Nginx does not utilize a standard configure script. It has its own
 # and the standard configure options cause the nginx configure script
-# to error out.  This is is also the reason for the DESTDIR environment
+# to error out. This is is also the reason for the DESTDIR environment
 # variable.
 export DESTDIR=%{buildroot}
 # So the perl module finds its symbols:
@@ -395,7 +398,7 @@ find %{buildroot} -type f -iname '*.so' -exec %{__chmod} 0755 '{}' \;
 %{__ln_s} nginx-logo.png %{buildroot}%{_datadir}/nginx/html/poweredby.png
 %{__mkdir_p} %{buildroot}%{_datadir}/nginx/html/icons
 
-# Symlink for the powered-by-${DISTRO} image:
+# Symlink for the powered-by-${DISTRO} image.
 %{__ln_s} ../../../pixmaps/poweredby.png \
   %{buildroot}%{_datadir}/nginx/html/icons/poweredby.png
 
@@ -607,6 +610,9 @@ fi
 
 
 %changelog
+* Fri Jun 18 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-102
+- UPD: Add "Vendor" & "Packager" fields.
+
 * Fri Jun 18 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-101
 - UPD: New build for latest changes.
 
