@@ -200,7 +200,7 @@ BuildRequires:                  perl-generators
 %endif
 BuildRequires:                  perl(ExtUtils::Embed)
 Requires:                       nginx
-Requires:                       perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
+Requires:                       perl(:MODULE_COMPAT_%(eval "$( %{__perl} -V:version )"; echo ${version}))
 Requires:                       perl(constant)
 
 %description mod-http-perl
@@ -278,7 +278,7 @@ Requires:                       nginx
 # variable.
 export DESTDIR=%{buildroot}
 # So the perl module finds its symbols:
-nginx_ldopts="$RPM_LD_FLAGS -Wl,-E"
+nginx_ldopts="${RPM_LD_FLAGS} -Wl,-E"
 if ! ./configure                                                            \
   --prefix=%{_datadir}/nginx                                                \
   --sbin-path=%{_sbindir}/nginx                                             \
@@ -334,8 +334,8 @@ if ! ./configure                                                            \
     --with-stream_ssl_preread_module                                        \
     --with-threads                                                          \
   --add-module=%{_tmppath}/%{d_brotli}                                      \
-  --with-cc-opt="%{optflags} $(pcre-config --cflags)"                       \
-  --with-ld-opt="$nginx_ldopts"; then
+  --with-cc-opt="%{optflags} $( pcre-config --cflags )"                     \
+  --with-ld-opt="${nginx_ldopts}"; then
   : configure failed
   %{__cat} objs/autoconf.err
   exit 1
@@ -395,7 +395,7 @@ find %{buildroot} -type f -iname '*.so' -exec %{__chmod} 0755 '{}' \;
 %{__ln_s} nginx-logo.png %{buildroot}%{_datadir}/nginx/html/poweredby.png
 %{__mkdir_p} %{buildroot}%{_datadir}/nginx/html/icons
 
-# Symlink for the powered-by-$DISTRO image:
+# Symlink for the powered-by-${DISTRO} image:
 %{__ln_s} ../../../pixmaps/poweredby.png \
   %{buildroot}%{_datadir}/nginx/html/icons/poweredby.png
 
@@ -461,38 +461,38 @@ exit 0
 
 %if %{with geoip}
 %post mod-http-geoip
-if [[ $1 -eq 1 ]]; then
+if [[ ${1} -eq 1 ]]; then
   /usr/bin/systemctl reload nginx.service >/dev/null 2>&1 || :
 fi
 %endif
 
 
 %post mod-http-image-filter
-if [[ $1 -eq 1 ]]; then
+if [[ ${1} -eq 1 ]]; then
   /usr/bin/systemctl reload nginx.service >/dev/null 2>&1 || :
 fi
 
 
 %post mod-http-perl
-if [[ $1 -eq 1 ]]; then
+if [[ ${1} -eq 1 ]]; then
   /usr/bin/systemctl reload nginx.service >/dev/null 2>&1 || :
 fi
 
 
 %post mod-http-xslt-filter
-if [[ $1 -eq 1 ]]; then
+if [[ ${1} -eq 1 ]]; then
   /usr/bin/systemctl reload nginx.service >/dev/null 2>&1 || :
 fi
 
 
 %post mod-mail
-if [[ $1 -eq 1 ]]; then
+if [[ ${1} -eq 1 ]]; then
   /usr/bin/systemctl reload nginx.service >/dev/null 2>&1 || :
 fi
 
 
 %post mod-stream
-if [[ $1 -eq 1 ]]; then
+if [[ ${1} -eq 1 ]]; then
   /usr/bin/systemctl reload nginx.service >/dev/null 2>&1 || :
 fi
 
@@ -503,7 +503,7 @@ fi
 
 %postun
 %systemd_postun nginx.service
-if [[ $1 -ge 1 ]]; then
+if [[ ${1} -ge 1 ]]; then
   /usr/bin/nginx-upgrade >/dev/null 2>&1 || :
 fi
 
@@ -1030,7 +1030,7 @@ fi
 - update to upstream release 1.2.8
 
 * Fri Feb 22 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:1.2.7-2
-- %{__make} sure nginx directories are not world readable (#913724, #913735)
+- make sure nginx directories are not world readable (#913724, #913735)
 
 * Sat Feb 16 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:1.2.7-1
 - update to upstream release 1.2.7
