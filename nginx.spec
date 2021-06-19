@@ -60,7 +60,6 @@ Source103:                      404.html
 Source104:                      50x.html
 Source200:                      README.dynamic
 Source210:                      UPGRADE-NOTES-1.6-to-1.10
-
 # Signature.
 Source900:                      https://nginx.org/download/nginx-%{version}.tar.gz.asc
 # Brotli.
