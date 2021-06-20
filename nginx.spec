@@ -33,9 +33,9 @@
 %endif
 
 Name:                           nginx
-Epoch:                          1
 Version:                        1.21.0
 Release:                        %{release_prefix}%{?dist}
+Epoch:                          1
 Summary:                        A high performance web server and reverse proxy server
 # BSD License (two clause).
 # http://www.freebsd.org/copyright/freebsd-license.html
