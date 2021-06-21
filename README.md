@@ -8,6 +8,7 @@
 
 ```
 $ dnf copr enable pkgstore/nginx
+$ dnf install -y nginx
 ```
 
 ### Open Build Service (OBS)
