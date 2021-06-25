@@ -3,7 +3,7 @@
 %global app                     nginx
 %global user                    %{app}
 %global group                   %{app}
-%global release_prefix          103
+%global release_prefix          102
 
 %global d_brotli                ngx_brotli
 
@@ -46,7 +46,8 @@ Packager:                       Kitsune Solar <kitsune.solar@gmail.com>
 
 Source0:                        https://nginx.org/download/nginx-%{version}.tar.gz
 Source1:                        https://nginx.org/download/nginx-%{version}.tar.gz.asc
-# Keys are found here: https://nginx.org/en/pgp_keys.html
+# Keys are found here:
+# https://nginx.org/en/pgp_keys.html.
 Source2:                        https://nginx.org/keys/maxim.key
 Source3:                        https://nginx.org/keys/mdounin.key
 Source4:                        https://nginx.org/keys/sb.key
@@ -78,10 +79,6 @@ Patch0:                         0001-remove-Werror-in-upstream-build-scripts.pat
 # Downstream patch - fix PIDFile race condition (rhbz#1869026).
 # Rejected upstream: https://trac.nginx.org/nginx/ticket/1897.
 Patch1:                         0002-fix-PIDFile-handling.patch
-
-# Fix for CVE-2021-3618: ALPACA:
-# Application Layer Protocol Confusion - Analyzing and Mitigating Cracks in TLS Authentication.
-Patch2:                         http://hg.nginx.org/nginx/raw-rev/ec1071830799
 
 BuildRequires:                  make
 BuildRequires:                  gcc
@@ -613,9 +610,6 @@ fi
 
 
 %changelog
-* Sat Jun 26 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-103
-- FIX: CVE-2021-3618 (rhbz#1975651) // Felix Kaechele <heffer@fedoraproject.org>
-
 * Fri Jun 18 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-102
 - UPD: Add "Vendor" & "Packager" fields.
 
