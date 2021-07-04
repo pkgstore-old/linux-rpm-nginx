@@ -23,6 +23,13 @@ $ dnf install -y nginx
 $ dnf upgrade -y nginx
 ```
 
+## Remove
+
+```
+$ dnf erase -y nginx
+$ dnf copr remove pkgstore/nginx
+```
+
 ## How to Build
 
 1. Get source from [src.fedoraproject.org](https://src.fedoraproject.org/rpms/nginx).
