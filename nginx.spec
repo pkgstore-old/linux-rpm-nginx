@@ -3,7 +3,7 @@
 %global app                     nginx
 %global user                    %{app}
 %global group                   %{app}
-%global release_prefix          102
+%global release_prefix          100
 
 %global d_brotli                ngx_brotli
 
@@ -33,7 +33,7 @@
 %endif
 
 Name:                           nginx
-Version:                        1.21.0
+Version:                        1.21.1
 Release:                        %{release_prefix}%{?dist}
 Epoch:                          1
 Summary:                        A high performance web server and reverse proxy server
@@ -610,6 +610,9 @@ fi
 
 
 %changelog
+* Thu Jul 08 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-100
+- NEW: v1.21.1.
+
 * Fri Jun 18 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-102
 - UPD: Add "Vendor" & "Packager" fields.
 
