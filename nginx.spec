@@ -81,7 +81,7 @@ Patch0:                         0001-remove-Werror-in-upstream-build-scripts.pat
 Patch1:                         0002-fix-PIDFile-handling.patch
 
 # Fix for CVE-2021-3618: ALPACA: Application Layer Protocol Confusion - Analyzing and Mitigating Cracks in TLS Authentication
-Patch2:                         https://hg.nginx.org/nginx/raw-rev/ec1071830799
+# Patch2:                       https://hg.nginx.org/nginx/raw-rev/ec1071830799
 
 BuildRequires:                  make
 BuildRequires:                  gcc
