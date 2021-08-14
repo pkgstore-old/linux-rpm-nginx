@@ -3,8 +3,6 @@
 %global app                     nginx
 %global user                    %{app}
 %global group                   %{app}
-%global release_prefix          100
-
 %global d_brotli                ngx_brotli
 
 # Disable strict symbol checks in the link editor.
@@ -31,6 +29,8 @@
 %if 0%{?fedora} > 22
 %global with_mailcap_mimetypes  1
 %endif
+
+%global release_prefix          101
 
 Name:                           nginx
 Version:                        1.21.1
@@ -79,6 +79,9 @@ Patch0:                         0001-remove-Werror-in-upstream-build-scripts.pat
 # Downstream patch - fix PIDFile race condition (rhbz#1869026).
 # Rejected upstream: https://trac.nginx.org/nginx/ticket/1897.
 Patch1:                         0002-fix-PIDFile-handling.patch
+
+# Fix for CVE-2021-3618: ALPACA: Application Layer Protocol Confusion - Analyzing and Mitigating Cracks in TLS Authentication
+Patch2:                         https://hg.nginx.org/nginx/raw-rev/ec1071830799
 
 BuildRequires:                  make
 BuildRequires:                  gcc
@@ -402,6 +405,11 @@ find %{buildroot} -type f -iname '*.so' -exec %{__chmod} 0755 '{}' \;
 %{__ln_s} ../../../pixmaps/poweredby.png \
   %{buildroot}%{_datadir}/nginx/html/icons/poweredby.png
 
+%if 0%{?rhel} >= 9
+%{__ln_s} ../../pixmaps/system-noindex-logo.png \
+  %{buildroot}%{_datadir}/nginx/html/system_noindex_logo.png
+%endif
+
 %{__install} -p -m 0644 %{SOURCE103} %{SOURCE104} \
   %{buildroot}%{_datadir}/nginx/html
 
@@ -610,6 +618,11 @@ fi
 
 
 %changelog
+* Sat Aug 14 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-101
+- UPD: SPEC-file.
+- ADD: Symlink used by system-logos-httpd.
+- FIX: Sor CVE-2021-3618 (rhbz#1975651).
+
 * Thu Jul 08 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-100
 - NEW: v1.21.1.
 
