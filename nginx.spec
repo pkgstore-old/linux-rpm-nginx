@@ -30,7 +30,18 @@
 %global with_mailcap_mimetypes  1
 %endif
 
-%global release_prefix          101
+# Cf. https://www.nginx.com/blog/creating-installable-packages-dynamic-modules/
+%global nginx_abiversion %{version}
+
+%global nginx_moduledir %{_libdir}/nginx/modules
+%global nginx_moduleconfdir %{_datadir}/nginx/modules
+%global nginx_srcdir %{_usrsrc}/%{name}-%{version}-%{release}
+
+# Do not generate provides/requires from nginx sources
+%global __provides_exclude_from ^%{nginx_srcdir}/.*$
+%global __requires_exclude_from ^%{nginx_srcdir}/.*$
+
+%global release_prefix          102
 
 Name:                           nginx
 Version:                        1.21.1
@@ -56,6 +67,8 @@ Source11:                       nginx.logrotate
 Source12:                       nginx.conf
 Source13:                       nginx-upgrade
 Source14:                       nginx-upgrade.8
+Source15:                       macros.nginxmods.in
+Source16:                       nginxmods.attr
 Source102:                      nginx-logo.png
 Source103:                      404.html
 Source104:                      50x.html
@@ -126,6 +139,8 @@ BuildRequires:                  systemd
 Requires(post):                 systemd
 Requires(preun):                systemd
 Requires(postun):               systemd
+# For external nginx modules
+Provides:                       nginx(abi) = %{nginx_abiversion}
 
 %description
 Nginx is a web server and a reverse proxy server for HTTP, SMTP, POP3 and
@@ -174,7 +189,7 @@ directories.
 %package mod-http-geoip
 Summary:                        Nginx HTTP geoip module
 BuildRequires:                  GeoIP-devel
-Requires:                       nginx
+Requires:                       nginx(abi) = %{nginx_abiversion}
 Requires:                       GeoIP
 
 %description mod-http-geoip
@@ -188,7 +203,7 @@ Requires:                       GeoIP
 %package mod-http-image-filter
 Summary:                        Nginx HTTP image filter module
 BuildRequires:                  gd-devel
-Requires:                       nginx
+Requires:                       nginx(abi) = %{nginx_abiversion}
 Requires:                       gd
 
 %description mod-http-image-filter
@@ -205,7 +220,7 @@ BuildRequires:                  perl-devel
 BuildRequires:                  perl-generators
 %endif
 BuildRequires:                  perl(ExtUtils::Embed)
-Requires:                       nginx
+Requires:                       nginx(abi) = %{nginx_abiversion}
 Requires:                       perl(:MODULE_COMPAT_%(eval "$( %{__perl} -V:version )"; echo ${version}))
 Requires:                       perl(constant)
 
@@ -219,7 +234,7 @@ Requires:                       perl(constant)
 %package mod-http-xslt-filter
 Summary:                        Nginx XSLT module
 BuildRequires:                  libxslt-devel
-Requires:                       nginx
+Requires:                       nginx(abi) = %{nginx_abiversion}
 
 %description mod-http-xslt-filter
 %{summary}.
@@ -230,7 +245,7 @@ Requires:                       nginx
 
 %package mod-mail
 Summary:                        Nginx mail modules
-Requires:                       nginx
+Requires:                       nginx(abi) = %{nginx_abiversion}
 
 %description mod-mail
 %{summary}.
@@ -241,9 +256,35 @@ Requires:                       nginx
 
 %package mod-stream
 Summary:                        Nginx stream modules
-Requires:                       nginx
+Requires:                       nginx(abi) = %{nginx_abiversion}
 
 %description mod-stream
+%{summary}.
+
+%package mod-devel
+Summary:                        Nginx module development files
+Requires:                       nginx = %{epoch}:%{version}-%{release}
+Requires:                       make
+Requires:                       gcc
+Requires:                       gd-devel
+%if 0%{?with_gperftools}
+Requires:                       gperftools-devel
+%endif
+%if %{with geoip}
+Requires:                       GeoIP-devel
+%endif
+Requires:                       libxslt-devel
+%if 0%{?fedora} || 0%{?rhel} >= 8
+Requires:                       openssl-devel
+%else
+Requires:                       openssl11-devel
+%endif
+Requires:                       pcre-devel
+Requires:                       perl-devel
+Requires:                       perl(ExtUtils::Embed)
+Requires:                       zlib-devel
+
+%description mod-devel
 %{summary}.
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -276,6 +317,10 @@ Requires:                       nginx
   -i auto/lib/openssl/conf
 %endif
 
+# Prepare sources for installation
+%{__cp} -a ../%{name}-%{version} ../%{name}-%{version}-%{release}-src
+%{__mv} ../%{name}-%{version}-%{release}-src .
+
 
 %build
 # Nginx does not utilize a standard configure script. It has its own
@@ -288,7 +333,7 @@ nginx_ldopts="${RPM_LD_FLAGS} -Wl,-E"
 if ! ./configure                                                            \
   --prefix=%{_datadir}/nginx                                                \
   --sbin-path=%{_sbindir}/nginx                                             \
-  --modules-path=%{_libdir}/nginx/modules                                   \
+  --modules-path=%{nginx_moduledir}                                         \
   --conf-path=%{_sysconfdir}/nginx/nginx.conf                               \
   --error-log-path=%{_localstatedir}/log/nginx/error.log                    \
   --http-log-path=%{_localstatedir}/log/nginx/access.log                    \
@@ -376,14 +421,13 @@ find %{buildroot} -type f -iname '*.so' -exec %{__chmod} 0755 '{}' \;
 %{__install} -p -d -m 0700 %{buildroot}%{_localstatedir}/log/nginx
 
 %{__install} -p -d -m 0755 %{buildroot}%{_datadir}/nginx/html
-%{__install} -p -d -m 0755 %{buildroot}%{_datadir}/nginx/modules
-%{__install} -p -d -m 0755 %{buildroot}%{_libdir}/nginx/modules
+%{__install} -p -d -m 0755 %{buildroot}%{nginx_moduleconfdir}
+%{__install} -p -d -m 0755 %{buildroot}%{nginx_moduledir}
 
 %{__install} -p -m 0644 ./nginx.conf \
   %{buildroot}%{_sysconfdir}/nginx
 
 %{__rm} -f %{buildroot}%{_datadir}/nginx/html/index.html
-
 %if 0%{?el7}
 %{__ln_s} ../../doc/HTML/index.html \
   %{buildroot}%{_datadir}/nginx/html/index.html
@@ -395,7 +439,6 @@ find %{buildroot} -type f -iname '*.so' -exec %{__chmod} 0755 '{}' \;
 %{__ln_s} ../../testpage/index.html \
   %{buildroot}%{_datadir}/nginx/html/index.html
 %endif
-
 %{__install} -p -m 0644 %{SOURCE102} \
   %{buildroot}%{_datadir}/nginx/html
 %{__ln_s} nginx-logo.png %{buildroot}%{_datadir}/nginx/html/poweredby.png
@@ -433,19 +476,33 @@ for i in ftdetect ftplugin indent syntax; do
 done
 
 %if %{with geoip}
-echo 'load_module "%{_libdir}/nginx/modules/ngx_http_geoip_module.so";' \
-  > %{buildroot}%{_datadir}/nginx/modules/mod-http-geoip.conf
+echo 'load_module "%{nginx_moduledir}/ngx_http_geoip_module.so";' \
+  > %{buildroot}%{nginx_moduleconfdir}/mod-http-geoip.conf
 %endif
-echo 'load_module "%{_libdir}/nginx/modules/ngx_http_image_filter_module.so";' \
-  > %{buildroot}%{_datadir}/nginx/modules/mod-http-image-filter.conf
-echo 'load_module "%{_libdir}/nginx/modules/ngx_http_perl_module.so";' \
-  > %{buildroot}%{_datadir}/nginx/modules/mod-http-perl.conf
-echo 'load_module "%{_libdir}/nginx/modules/ngx_http_xslt_filter_module.so";' \
-  > %{buildroot}%{_datadir}/nginx/modules/mod-http-xslt-filter.conf
-echo 'load_module "%{_libdir}/nginx/modules/ngx_mail_module.so";' \
-  > %{buildroot}%{_datadir}/nginx/modules/mod-mail.conf
-echo 'load_module "%{_libdir}/nginx/modules/ngx_stream_module.so";' \
-  > %{buildroot}%{_datadir}/nginx/modules/mod-stream.conf
+echo 'load_module "%{nginx_moduledir}/ngx_http_image_filter_module.so";' \
+  > %{buildroot}%{nginx_moduleconfdir}/mod-http-image-filter.conf
+echo 'load_module "%{nginx_moduledir}/ngx_http_perl_module.so";' \
+  > %{buildroot}%{nginx_moduleconfdir}/mod-http-perl.conf
+echo 'load_module "%{nginx_moduledir}/ngx_http_xslt_filter_module.so";' \
+  > %{buildroot}%{nginx_moduleconfdir}/mod-http-xslt-filter.conf
+echo 'load_module "%{nginx_moduledir}/ngx_mail_module.so";' \
+  > %{buildroot}%{nginx_moduleconfdir}/mod-mail.conf
+echo 'load_module "%{nginx_moduledir}/ngx_stream_module.so";' \
+  > %{buildroot}%{nginx_moduleconfdir}/mod-stream.conf
+
+# Install files for supporting nginx module builds
+## Install source files
+%{__mkdir_p} %{buildroot}%{_usrsrc}
+%{__mv} %{name}-%{version}-%{release}-src %{buildroot}%{nginx_srcdir}
+## Install rpm macros
+%{__mkdir_p} %{buildroot}%{_rpmmacrodir}
+%{__sed} -e "s|@@NGINX_ABIVERSION@@|%{nginx_abiversion}|g" \
+  -e "s|@@NGINX_MODDIR@@|%{nginx_moduledir}|g" \
+  -e "s|@@NGINX_MODCONFDIR@@|%{nginx_moduleconfdir}|g" \
+  -e "s|@@NGINX_SRCDIR@@|%{nginx_srcdir}|g" \
+  %{SOURCE15} > %{buildroot}%{_rpmmacrodir}/macros.nginxmods
+## Install dependency generator
+%{__install} -Dpm0644 -t %{buildroot}%{_fileattrsdir} %{SOURCE16}
 
 %{__mkdir_p} %{buildroot}%{_libexecdir}
 # SSL generator: nginx-ssl-pass-dialog.
@@ -559,7 +616,8 @@ fi
 %attr(711,root,root) %dir %{_localstatedir}/log/nginx
 %ghost %attr(640,%{user},root) %{_localstatedir}/log/nginx/access.log
 %ghost %attr(640,%{user},root) %{_localstatedir}/log/nginx/error.log
-%dir %{_libdir}/nginx/modules
+%dir %{nginx_moduledir}
+%dir %{nginx_moduleconfdir}
 # Default vhost config.
 %config %{_sysconfdir}/nginx/vhosts.d/00-server.default.conf
 # SSL generator.
@@ -584,40 +642,46 @@ fi
 
 %if %{with geoip}
 %files mod-http-geoip
-%{_datadir}/nginx/modules/mod-http-geoip.conf
-%{_libdir}/nginx/modules/ngx_http_geoip_module.so
+%{nginx_moduleconfdir}/mod-http-geoip.conf
+%{nginx_moduledir}/ngx_http_geoip_module.so
 %endif
 
 
 %files mod-http-image-filter
-%{_datadir}/nginx/modules/mod-http-image-filter.conf
-%{_libdir}/nginx/modules/ngx_http_image_filter_module.so
-
+%{nginx_moduleconfdir}/mod-http-image-filter.conf
+%{nginx_moduledir}/ngx_http_image_filter_module.so
 
 %files mod-http-perl
-%{_datadir}/nginx/modules/mod-http-perl.conf
-%{_libdir}/nginx/modules/ngx_http_perl_module.so
+%{nginx_moduleconfdir}/mod-http-perl.conf
+%{nginx_moduledir}/ngx_http_perl_module.so
 %dir %{perl_vendorarch}/auto/nginx
 %{perl_vendorarch}/nginx.pm
 %{perl_vendorarch}/auto/nginx/nginx.so
 
 
 %files mod-http-xslt-filter
-%{_datadir}/nginx/modules/mod-http-xslt-filter.conf
-%{_libdir}/nginx/modules/ngx_http_xslt_filter_module.so
-
+%{nginx_moduleconfdir}/mod-http-xslt-filter.conf
+%{nginx_moduledir}/ngx_http_xslt_filter_module.so
 
 %files mod-mail
-%{_datadir}/nginx/modules/mod-mail.conf
-%{_libdir}/nginx/modules/ngx_mail_module.so
-
+%{nginx_moduleconfdir}/mod-mail.conf
+%{nginx_moduledir}/ngx_mail_module.so
 
 %files mod-stream
-%{_datadir}/nginx/modules/mod-stream.conf
-%{_libdir}/nginx/modules/ngx_stream_module.so
+%{nginx_moduleconfdir}/mod-stream.conf
+%{nginx_moduledir}/ngx_stream_module.so
+
+%files mod-devel
+%{_rpmmacrodir}/macros.nginxmods
+%{_fileattrsdir}/nginxmods.attr
+%{nginx_srcdir}/
 
 
 %changelog
+* Fri Aug 20 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-102
+- UPD: SPEC-file.
+- ADD: "-mod-devel" subpackage for building external nginx modules (rhbz#1989778) // Neal Gompa.
+
 * Sat Aug 14 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-101
 - UPD: SPEC-file.
 - ADD: Symlink used by system-logos-httpd.
