@@ -41,10 +41,10 @@
 %global __provides_exclude_from ^%{nginx_srcdir}/.*$
 %global __requires_exclude_from ^%{nginx_srcdir}/.*$
 
-%global release_prefix          102
+%global release_prefix          100
 
 Name:                           nginx
-Version:                        1.21.1
+Version:                        1.21.3
 Release:                        %{release_prefix}%{?dist}
 Epoch:                          1
 Summary:                        A high performance web server and reverse proxy server
@@ -678,6 +678,9 @@ fi
 
 
 %changelog
+* Fri Sep 17 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.3-100
+- NEW: v1.21.3.
+
 * Fri Aug 20 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-102
 - UPD: SPEC-file.
 - ADD: "-mod-devel" subpackage for building external nginx modules (rhbz#1989778) // Neal Gompa.
