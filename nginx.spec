@@ -1,8 +1,5 @@
 %global _hardened_build         1
-
-%global app                     nginx
-%global user                    %{app}
-%global group                   %{app}
+%global nginx_user              nginx
 %global d_brotli                ngx_brotli
 
 # Disable strict symbol checks in the link editor.
@@ -355,8 +352,8 @@ if ! ./configure                                                            \
   --http-scgi-temp-path=%{_localstatedir}/lib/nginx/tmp/scgi                \
   --pid-path=/run/nginx.pid                                                 \
   --lock-path=/run/lock/subsys/nginx                                        \
-  --user=%{user}                                                            \
-  --group=%{group}                                                          \
+    --user=%{nginx_user} \
+    --group=%{nginx_user} \
     --with-compat                                                           \
     --with-debug                                                            \
 %if 0%{?with_aio}
@@ -528,10 +525,10 @@ echo 'load_module "%{nginx_moduledir}/ngx_stream_module.so";' \
 
 
 %pre filesystem
-getent group %{group} > /dev/null || groupadd -r %{group}
-getent passwd %{user} > /dev/null || \
-  useradd -r -d %{_localstatedir}/lib/nginx -g %{group} \
-    -s /sbin/nologin -c "Nginx web server" %{user}
+getent group %{nginx_user} > /dev/null || groupadd -r %{nginx_user}
+getent passwd %{nginx_user} > /dev/null || \
+  useradd -r -d %{_localstatedir}/lib/nginx -g %{nginx_user} \
+    -s /sbin/nologin -c "Nginx web server" %{nginx_user}
 exit 0
 
 
@@ -624,11 +621,11 @@ fi
 %config(noreplace) %{_sysconfdir}/nginx/uwsgi_params.default
 %config(noreplace) %{_sysconfdir}/nginx/win-utf
 %config(noreplace) %{_sysconfdir}/logrotate.d/nginx
-%attr(770,%{user},root) %dir %{_localstatedir}/lib/nginx
-%attr(770,%{user},root) %dir %{_localstatedir}/lib/nginx/tmp
+%attr(770,%{nginx_user},root) %dir %{_localstatedir}/lib/nginx
+%attr(770,%{nginx_user},root) %dir %{_localstatedir}/lib/nginx/tmp
 %attr(711,root,root) %dir %{_localstatedir}/log/nginx
-%ghost %attr(640,%{user},root) %{_localstatedir}/log/nginx/access.log
-%ghost %attr(640,%{user},root) %{_localstatedir}/log/nginx/error.log
+%ghost %attr(640,%{nginx_user},root) %{_localstatedir}/log/nginx/access.log
+%ghost %attr(640,%{nginx_user},root) %{_localstatedir}/log/nginx/error.log
 %dir %{nginx_moduledir}
 %dir %{nginx_moduleconfdir}
 # Default vhost config.
