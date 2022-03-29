@@ -44,7 +44,7 @@
 %global release_prefix          100
 
 Name:                           nginx
-Version:                        1.21.3
+Version:                        1.21.6
 Release:                        %{release_prefix}%{?dist}
 Epoch:                          1
 Summary:                        A high performance web server and reverse proxy server
@@ -122,18 +122,14 @@ Obsoletes:                      nginx-mod-http-geoip <= 1:1.16
 Requires:                       system-logos-httpd
 %endif
 
-Requires:                       openssl
 Requires:                       pcre
 Requires:                       sscg >= 2.2.0
 
-Requires(pre):                  nginx-filesystem
-%if 0%{?with_mailcap_mimetypes}
-Requires:                       nginx-mimetypes
-%endif
 Provides:                       webserver
 %if 0%{?fedora} || 0%{?rhel} >= 8
 Recommends:                     logrotate
 %endif
+Requires:                       %{name}-core = %{epoch}:%{version}-%{release}
 
 BuildRequires:                  systemd
 Requires(post):                 systemd
@@ -146,6 +142,21 @@ Provides:                       nginx(abi) = %{nginx_abiversion}
 Nginx is a web server and a reverse proxy server for HTTP, SMTP, POP3 and
 IMAP protocols, with a strong focus on high concurrency, performance and low
 memory usage.
+
+# -------------------------------------------------------------------------------------------------------------------- #
+# Package: core
+# -------------------------------------------------------------------------------------------------------------------- #
+
+%package core
+Summary:                        nginx minimal core
+%if 0%{?with_mailcap_mimetypes}
+Requires:                       nginx-mimetypes
+%endif
+Requires:                       openssl-libs
+Requires(pre):                  nginx-filesystem
+
+%description core
+nginx minimal core
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # Package: all-modules
@@ -502,7 +513,7 @@ echo 'load_module "%{nginx_moduledir}/ngx_stream_module.so";' \
   -e "s|@@NGINX_SRCDIR@@|%{nginx_srcdir}|g" \
   %{SOURCE15} > %{buildroot}%{_rpmmacrodir}/macros.nginxmods
 ## Install dependency generator
-%{__install} -Dpm0644 -t %{buildroot}%{_fileattrsdir} %{SOURCE16}
+%{__install} -Dpm0644 %{SOURCE16} %{buildroot}%{_fileattrsdir}/nginxmods.attr
 
 %{__mkdir_p} %{buildroot}%{_libexecdir}
 # SSL generator: nginx-ssl-pass-dialog.
@@ -577,14 +588,11 @@ fi
 
 
 %files
-%license LICENSE
-%doc CHANGES README README.dynamic
 %if 0%{?rhel} == 7
 %doc UPGRADE-NOTES-1.6-to-1.10
 %endif
 %{_datadir}/nginx/html/*
 %{_bindir}/nginx-upgrade
-%{_sbindir}/nginx
 %{_datadir}/vim/vimfiles/ftdetect/nginx.vim
 %{_datadir}/vim/vimfiles/ftplugin/nginx.vim
 %{_datadir}/vim/vimfiles/syntax/nginx.vim
@@ -593,6 +601,11 @@ fi
 %{_mandir}/man8/nginx.8*
 %{_mandir}/man8/nginx-upgrade.8*
 %{_unitdir}/nginx.service
+
+%files core
+%license LICENSE
+%doc CHANGES README README.dynamic
+%{_sbindir}/nginx
 %config(noreplace) %{_sysconfdir}/nginx/fastcgi.conf
 %config(noreplace) %{_sysconfdir}/nginx/fastcgi.conf.default
 %config(noreplace) %{_sysconfdir}/nginx/fastcgi_params
@@ -678,8 +691,30 @@ fi
 
 
 %changelog
+* Tue Mar 29 2022 Package Store <pkgstore@mail.ru> - 1:1.21.6-100
+- NEW: Nginx v1.21.6.
+- UPD: Rebuild by Package Store.
+
+* Thu Mar 24 2022 Honza Horak <hhorak@redhat.com> - 1:1.20.2-4
+- Introduce core sub-package for having a daemon only with a minimal footprint
+
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.20.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Fri Dec 17 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.2-1
+- update to 1.20.2
+
+* Mon Oct 18 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.1-9
+- fix installation of nginxmods.attr for EPEL 7
+
+* Mon Oct 18 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.1-8
+- Fix "file size changed while zipping" when rotating logs (rhbz#1980948,2015249,2015243)
+
 * Fri Sep 17 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.3-100
 - NEW: v1.21.3.
+
+* Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 1:1.20.1-7
+- Rebuilt with OpenSSL 3.0.0
 
 * Fri Aug 20 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-102
 - UPD: SPEC-file.
@@ -690,8 +725,20 @@ fi
 - ADD: Symlink used by system-logos-httpd.
 - FIX: Sor CVE-2021-3618 (rhbz#1975651).
 
+* Tue Aug 10 2021 Neal Gompa <ngompa@datto.com> - 1:1.20.1-6
+- Add -mod-devel subpackage for building external nginx modules (rhbz#1989778)
+
+* Mon Aug 09 2021 Luboš Uhliarik <luhliari@redhat.com> - 1:1.20.1-5
+- Add symlink used by system-logos-httpd
+
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.20.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Thu Jul 08 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-100
 - NEW: v1.21.1.
+
+* Fri Jun 25 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.1-3
+- fix for CVE-2021-3618 (rhbz#1975651)
 
 * Fri Jun 18 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-102
 - UPD: Add "Vendor" & "Packager" fields.
