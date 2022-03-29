@@ -38,7 +38,7 @@
 %global __provides_exclude_from ^%{nginx_srcdir}/.*$
 %global __requires_exclude_from ^%{nginx_srcdir}/.*$
 
-%global release_prefix          100
+%global release_prefix          101
 
 Name:                           nginx
 Version:                        1.21.6
@@ -688,6 +688,9 @@ fi
 
 
 %changelog
+* Tue Mar 29 2022 Package Store <pkgstore@mail.ru> - 1:1.21.6-101
+- UPD: SPEC-file.
+
 * Tue Mar 29 2022 Package Store <pkgstore@mail.ru> - 1:1.21.6-100
 - NEW: Nginx v1.21.6.
 - UPD: Rebuild by Package Store.
