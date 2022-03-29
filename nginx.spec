@@ -710,20 +710,8 @@ fi
 * Mon Oct 18 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.1-8
 - Fix "file size changed while zipping" when rotating logs (rhbz#1980948,2015249,2015243)
 
-* Fri Sep 17 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.3-100
-- NEW: v1.21.3.
-
 * Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 1:1.20.1-7
 - Rebuilt with OpenSSL 3.0.0
-
-* Fri Aug 20 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-102
-- UPD: SPEC-file.
-- ADD: "-mod-devel" subpackage for building external nginx modules (rhbz#1989778) // Neal Gompa.
-
-* Sat Aug 14 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-101
-- UPD: SPEC-file.
-- ADD: Symlink used by system-logos-httpd.
-- FIX: Sor CVE-2021-3618 (rhbz#1975651).
 
 * Tue Aug 10 2021 Neal Gompa <ngompa@datto.com> - 1:1.20.1-6
 - Add -mod-devel subpackage for building external nginx modules (rhbz#1989778)
@@ -734,22 +722,8 @@ fi
 * Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.20.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
-* Thu Jul 08 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.1-100
-- NEW: v1.21.1.
-
 * Fri Jun 25 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.1-3
 - fix for CVE-2021-3618 (rhbz#1975651)
-
-* Fri Jun 18 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-102
-- UPD: Add "Vendor" & "Packager" fields.
-
-* Fri Jun 18 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-101
-- UPD: New build for latest changes.
-
-* Thu Jun 17 2021 Package Store <kitsune.solar@gmail.com> - 1:1.21.0-100
-- NEW: v1.21.0.
-- UPD: Move to GitHub.
-- UPD: License.
 
 * Tue Jun 01 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.1-2
 - use different fix for rhbz#1683388 as it introduced permissions issues in 1:1.20.0-2
@@ -801,27 +775,18 @@ fi
 - Drop location / from default config (rhbz#1564768)
 - Drop default_sever from default config (rhbz#1373822)
 
-* Fri Mar 13 2020 Package Store <kitsune.solar@gmail.com> - 1:1.17.9-100
-- NEW: v1.17.9.
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.16.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
-* Wed Nov 20 2019 Package Store <kitsune.solar@gmail.com> - 1:1.17.6-100
-- NEW: v1.17.6.
+* Sun Sep 15 2019 Warren Togami <warren@blockstream.com>
+- add conditionals for EPEL7, see rhbz#1750857
 
-* Sat Oct 26 2019 Package Store <kitsune.solar@gmail.com> - 1:1.17.5-100
-- NEW: v1.17.5.
+* Tue Aug 13 2019 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:1.16.1-1
+- Update to upstream release 1.16.1
+- Fixes CVE-2019-9511, CVE-2019-9513, CVE-2019-9516
 
-* Thu Oct 03 2019 Package Store <kitsune.solar@gmail.com> - 1:1.17.4-100
-- NEW: v1.17.4.
-
-* Wed Jul 24 2019 Package Store <kitsune.solar@gmail.com> - 1:1.17.2-101
-- UPD: SPEC-file.
-
-* Wed Jul 24 2019 Package Store <kitsune.solar@gmail.com> - 1:1.17.2-100
-- NEW: v1.17.2.
-
-* Sat Jun 29 2019 Package Store <kitsune.solar@gmail.com> - 1:1.17.1-100
-- NEW: v1.17.1.
-- UPD: MARKETPLACE.
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.16.0-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
 * Thu May 30 2019 Jitka Plesnikova <jplesnik@redhat.com> - 1:1.16.0-4
 - Perl 5.30 rebuild
@@ -836,85 +801,16 @@ fi
 * Fri Apr 26 2019 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:1.16.0-1
 - Update to upstream release 1.16.0
 
-* Fri Mar 29 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.10-2
-- Update "nginx.conf".
-
-* Wed Mar 27 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.10-1
-- New version: 1.15.10.
-- Enable ngx_stream_ssl_preread module.
-- Remove redundant conditionals.
-
-* Sun Mar 24 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.9-6
-- Reconfigure SSL generator.
-
-* Sun Mar 17 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.9-5
-- Reconfigure SSL generator.
-
-* Sun Mar 17 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.9-4
-- Reconfigure SSL generator.
-
-* Sun Mar 17 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.9-3
-- Update "nginx.conf".
-
-* Thu Mar 14 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.9-2
-- Update SPEC-file.
-
 * Mon Mar 04 2019 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:1.15.9-1
 - Update to upstream release 1.15.9
 - Enable ngx_stream_ssl_preread module
 - Remove redundant conditionals
 
-* Wed Feb 27 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.9-1
-- New version: 1.15.9.
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.14.1-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
-* Thu Feb 14 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-13
-- Reconfigure SSL generator.
-
-* Tue Feb 12 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-12
-- Update "server.default.conf".
-
-* Sun Feb 10 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-11
-- Reconfigure SSL generator.
-
-* Sun Feb 10 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-10
-- Reconfigure SSL generator.
-
-* Sun Feb 10 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-9
-- Reconfigure SSL generator.
-
-* Sat Feb 09 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-8
-- Reconfigure SSL generator.
-
-* Sat Feb 09 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-7
-- Update SPEC-file.
-
-* Sat Feb 09 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-6
-- Reconfigure SSL generator.
-
-* Fri Jan 04 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-5
-- Reconfigure SSL generator.
-
-* Wed Jan 02 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-4
-- Update SPEC-file.
-
-* Wed Jan 02 2019 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-3
-- Update configurations from METADATA.
-
-* Mon Dec 31 2018 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-2
-- Update configurations from METADATA.
-
-* Thu Dec 27 2018 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.8-1
-- New version: 1.15.8.
-
-* Fri Dec 21 2018 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.7-3
-- Add requires: SSCG.
-- Fix "nginx.conf".
-
-* Mon Dec 17 2018 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.7-2
-- Fix some issues.
-
-* Sat Dec 15 2018 Kitsune Solar <kitsune.solar@gmail.com> - 1:1.15.7-1
-- Update from METADATA.
+* Mon Jan 14 2019 Björn Esser <besser82@fedoraproject.org> - 1:1.14.1-4
+- Rebuilt for libcrypt.so.2 (#1666033)
 
 * Tue Dec 11 2018 Joe Orton <jorton@redhat.com> - 1:1.14.1-3
 - fix unexpanded paths in nginx(8)
