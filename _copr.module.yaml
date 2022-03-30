@@ -1,0 +1,55 @@
+document: "modulemd"
+version: 2
+data:
+  name: "nginx"
+  stream: "1.21"
+  version: 20220331
+  summary: "COPR repository: pkgstore/nginx"
+  description: >
+    Nginx is a web server and a reverse proxy server for HTTP, SMTP, POP3 and IMAP protocols, with a strong focus on high concurrency performance and low memory usage.
+  license:
+    module:
+    - "BSD"
+  profiles:
+    common:
+      rpms:
+      - nginx
+      - nginx-all-modules
+      - nginx-core
+      - nginx-filesystem
+      - nginx-mod-devel
+      - nginx-mod-http-image-filter
+      - nginx-mod-http-perl
+      - nginx-mod-http-xslt-filter
+      - nginx-mod-mail
+      - nginx-mod-stream
+    default:
+      rpms:
+      - nginx
+      - nginx-all-modules
+      - nginx-core
+      - nginx-filesystem
+      - nginx-mod-devel
+      - nginx-mod-http-image-filter
+      - nginx-mod-http-perl
+      - nginx-mod-http-xslt-filter
+      - nginx-mod-mail
+      - nginx-mod-stream
+  api:
+    rpms:
+    - nginx
+    - nginx-all-modules
+    - nginx-core
+    - nginx-filesystem
+    - nginx-mod-devel
+    - nginx-mod-http-image-filter
+    - nginx-mod-http-perl
+    - nginx-mod-http-xslt-filter
+    - nginx-mod-mail
+    - nginx-mod-stream
+  components:
+    rpms:
+      nginx:
+        rationale: "User selected the package as a part of the module"
+        repository: "https://copr-dist-git.fedorainfracloud.org/git/pkgstore/nginx/nginx.git"
+        ref: "master"
