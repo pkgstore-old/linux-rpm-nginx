@@ -38,7 +38,7 @@
 %global __provides_exclude_from ^%{nginx_srcdir}/.*$
 %global __requires_exclude_from ^%{nginx_srcdir}/.*$
 
-%global release_prefix          1000
+%global release_prefix          1001
 
 Name:                           nginx
 Version:                        1.21.6
@@ -117,6 +117,7 @@ Requires:                       system-logos-httpd
 
 Requires:                       pcre
 Requires:                       sscg >= 2.2.0
+Requires:                       openssl
 
 Provides:                       webserver
 %if 0%{?fedora} || 0%{?rhel} >= 8
@@ -682,6 +683,9 @@ fi
 
 
 %changelog
+* Fri Apr 01 2022 Package Store <pkgstore@mail.ru> - 1:1.21.6-1001
+- ADD: Require "openssl".
+
 * Thu Mar 31 2022 Package Store <pkgstore@mail.ru> - 1:1.21.6-1000
 - UPD: Rebuild by Package Store.
 - UPD: File "nginx.spec".
