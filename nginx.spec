@@ -38,7 +38,7 @@
 %global __provides_exclude_from ^%{nginx_srcdir}/.*$
 %global __requires_exclude_from ^%{nginx_srcdir}/.*$
 
-%global release_prefix          101
+%global release_prefix          1000
 
 Name:                           nginx
 Version:                        1.21.6
@@ -49,16 +49,14 @@ Summary:                        A high performance web server and reverse proxy 
 # http://www.freebsd.org/copyright/freebsd-license.html
 License:                        BSD
 URL:                            https://nginx.org
-Vendor:                         Package Store <https://pkgstore.github.io>
-Packager:                       Kitsune Solar <kitsune.solar@gmail.com>
 
-Source0:                        https://nginx.org/download/nginx-%{version}.tar.gz
-Source1:                        https://nginx.org/download/nginx-%{version}.tar.gz.asc
+Source0:                        %{name}-%{version}.tar.xz
+# Source1:                      https://nginx.org/download/nginx-%{version}.tar.gz.asc
 # Keys are found here:
 # https://nginx.org/en/pgp_keys.html.
-Source2:                        https://nginx.org/keys/maxim.key
-Source3:                        https://nginx.org/keys/mdounin.key
-Source4:                        https://nginx.org/keys/sb.key
+# Source2:                      https://nginx.org/keys/maxim.key
+# Source3:                      https://nginx.org/keys/mdounin.key
+# Source4:                      https://nginx.org/keys/sb.key
 Source10:                       nginx.service
 Source11:                       nginx.logrotate
 Source12:                       nginx.conf
@@ -71,16 +69,14 @@ Source103:                      404.html
 Source104:                      50x.html
 Source200:                      README.dynamic
 Source210:                      UPGRADE-NOTES-1.6-to-1.10
-# Signature.
-# Source900:                    https://nginx.org/download/nginx-%{version}.tar.gz.asc
 # Brotli.
 Source910:                      %{d_brotli}.tar.xz
 # Zero server config.
 Source920:                      server.default.conf
 # SSL generator.
-Source921:                      nginx-ssl-pass-dialog
-Source922:                      nginx-ssl-gencerts
-Source923:                      nginx-ssl-gencerts-dhparam
+Source921:                      %{name}-ssl-pass-dialog
+Source922:                      %{name}-ssl-gencerts
+Source923:                      %{name}-ssl-gencerts-dhparam
 
 # Removes "-Werror" in upstream build scripts. "-Werror" conflicts with
 # -D_FORTIFY_SOURCE=2 causing warnings to turn into errors.
@@ -107,14 +103,14 @@ BuildRequires:                  openssl11-devel
 BuildRequires:                  pcre-devel
 BuildRequires:                  zlib-devel
 
-Requires:                       nginx-filesystem = %{epoch}:%{version}-%{release}
+Requires:                       %{name}-filesystem = %{epoch}:%{version}-%{release}
 %if 0%{?el7}
 # "centos-logos" el7 does not provide "system-indexhtml".
 Requires:                       system-logos redhat-indexhtml
 # Need to remove epel7 geoip sub-package, doesn't work anymore.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1576034
 # https://bugzilla.redhat.com/show_bug.cgi?id=1664957
-Obsoletes:                      nginx-mod-http-geoip <= 1:1.16
+Obsoletes:                      %{name}-mod-http-geoip <= 1:1.16
 %else
 Requires:                       system-logos-httpd
 %endif
@@ -133,7 +129,7 @@ Requires(post):                 systemd
 Requires(preun):                systemd
 Requires(postun):               systemd
 # For external nginx modules
-Provides:                       nginx(abi) = %{nginx_abiversion}
+Provides:                       %{name}(abi) = %{nginx_abiversion}
 
 %description
 Nginx is a web server and a reverse proxy server for HTTP, SMTP, POP3 and
@@ -145,15 +141,15 @@ memory usage.
 # -------------------------------------------------------------------------------------------------------------------- #
 
 %package core
-Summary:                        nginx minimal core
+Summary:                        %{name} minimal core
 %if 0%{?with_mailcap_mimetypes}
-Requires:                       nginx-mimetypes
+Requires:                       %{name}-mimetypes
 %endif
 Requires:                       openssl-libs
-Requires(pre):                  nginx-filesystem
+Requires(pre):                  %{name}-filesystem
 
 %description core
-nginx minimal core
+%{name} minimal core
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # Package: all-modules
@@ -164,16 +160,16 @@ Summary:                        A meta package that installs all available Nginx
 BuildArch:                      noarch
 
 %if %{with geoip}
-Requires:                       nginx-mod-http-geoip = %{epoch}:%{version}-%{release}
+Requires:                       %{name}-mod-http-geoip = %{epoch}:%{version}-%{release}
 %endif
-Requires:                       nginx-mod-http-image-filter = %{epoch}:%{version}-%{release}
-Requires:                       nginx-mod-http-perl = %{epoch}:%{version}-%{release}
-Requires:                       nginx-mod-http-xslt-filter = %{epoch}:%{version}-%{release}
-Requires:                       nginx-mod-mail = %{epoch}:%{version}-%{release}
-Requires:                       nginx-mod-stream = %{epoch}:%{version}-%{release}
+Requires:                       %{name}-mod-http-image-filter = %{epoch}:%{version}-%{release}
+Requires:                       %{name}-mod-http-perl = %{epoch}:%{version}-%{release}
+Requires:                       %{name}-mod-http-xslt-filter = %{epoch}:%{version}-%{release}
+Requires:                       %{name}-mod-mail = %{epoch}:%{version}-%{release}
+Requires:                       %{name}-mod-stream = %{epoch}:%{version}-%{release}
 
 %description all-modules
-Meta package that installs all available nginx modules.
+Meta package that installs all available %{name} modules.
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # Package: filesystem
@@ -185,7 +181,7 @@ BuildArch:                      noarch
 Requires(pre):                  shadow-utils
 
 %description filesystem
-The nginx-filesystem package contains the basic directory layout
+The %{name}-filesystem package contains the basic directory layout
 for the Nginx server including the correct permissions for the
 directories.
 
@@ -197,7 +193,7 @@ directories.
 %package mod-http-geoip
 Summary:                        Nginx HTTP geoip module
 BuildRequires:                  GeoIP-devel
-Requires:                       nginx(abi) = %{nginx_abiversion}
+Requires:                       %{name}(abi) = %{nginx_abiversion}
 Requires:                       GeoIP
 
 %description mod-http-geoip
@@ -211,7 +207,7 @@ Requires:                       GeoIP
 %package mod-http-image-filter
 Summary:                        Nginx HTTP image filter module
 BuildRequires:                  gd-devel
-Requires:                       nginx(abi) = %{nginx_abiversion}
+Requires:                       %{name}(abi) = %{nginx_abiversion}
 Requires:                       gd
 
 %description mod-http-image-filter
@@ -228,7 +224,7 @@ BuildRequires:                  perl-devel
 BuildRequires:                  perl-generators
 %endif
 BuildRequires:                  perl(ExtUtils::Embed)
-Requires:                       nginx(abi) = %{nginx_abiversion}
+Requires:                       %{name}(abi) = %{nginx_abiversion}
 Requires:                       perl(:MODULE_COMPAT_%(eval "$( %{__perl} -V:version )"; echo ${version}))
 Requires:                       perl(constant)
 
@@ -242,7 +238,7 @@ Requires:                       perl(constant)
 %package mod-http-xslt-filter
 Summary:                        Nginx XSLT module
 BuildRequires:                  libxslt-devel
-Requires:                       nginx(abi) = %{nginx_abiversion}
+Requires:                       %{name}(abi) = %{nginx_abiversion}
 
 %description mod-http-xslt-filter
 %{summary}.
@@ -253,7 +249,7 @@ Requires:                       nginx(abi) = %{nginx_abiversion}
 
 %package mod-mail
 Summary:                        Nginx mail modules
-Requires:                       nginx(abi) = %{nginx_abiversion}
+Requires:                       %{name}(abi) = %{nginx_abiversion}
 
 %description mod-mail
 %{summary}.
@@ -264,14 +260,14 @@ Requires:                       nginx(abi) = %{nginx_abiversion}
 
 %package mod-stream
 Summary:                        Nginx stream modules
-Requires:                       nginx(abi) = %{nginx_abiversion}
+Requires:                       %{name}(abi) = %{nginx_abiversion}
 
 %description mod-stream
 %{summary}.
 
 %package mod-devel
 Summary:                        Nginx module development files
-Requires:                       nginx = %{epoch}:%{version}-%{release}
+Requires:                       %{name} = %{epoch}:%{version}-%{release}
 Requires:                       make
 Requires:                       gcc
 Requires:                       gd-devel
@@ -300,9 +296,6 @@ Requires:                       zlib-devel
 # -------------------------------------------------------------------------------------------------------------------- #
 
 %prep
-# Combine all keys from upstream into one file.
-%{__cat} %{S:2} %{S:3} %{S:4} > %{_builddir}/%{name}.gpg
-%{gpgverify} --keyring='%{_builddir}/%{name}.gpg' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %autosetup -p1
 %{__cp} %{SOURCE200} %{SOURCE210} %{SOURCE10} %{SOURCE12} .
 
@@ -421,6 +414,7 @@ find %{buildroot} -type f -iname '*.so' -exec %{__chmod} 0755 '{}' \;
 
 %{__install} -p -d -m 0755 %{buildroot}%{_sysconfdir}/nginx/conf.d
 %{__install} -p -d -m 0755 %{buildroot}%{_sysconfdir}/nginx/default.d
+
 # Create "vhosts.d" directory.
 %{__install} -p -d -m 0755 %{buildroot}%{_sysconfdir}/nginx/vhosts.d
 
@@ -688,6 +682,10 @@ fi
 
 
 %changelog
+* Thu Mar 31 2022 Package Store <pkgstore@mail.ru> - 1:1.21.6-1000
+- UPD: Rebuild by Package Store.
+- UPD: File "nginx.spec".
+
 * Tue Mar 29 2022 Package Store <pkgstore@mail.ru> - 1:1.21.6-101
 - UPD: SPEC-file.
 
